@@ -1,12 +1,16 @@
-```````````````````````````````module Example.IndoEuropean exposing(..)
+module Example.IndoEuropean exposing (outline)
 
 import HTree.String
+
+
 
 -- [this reference](http://www.jacklynch.net/language.html)
 -- http://www.elinguistics.net/IE_language_tree.html
 -- https://www.nytimes.com/1996/01/02/science/new-family-tree-is-constructed-for-indo-european.html
 
-outline = """
+
+outline =
+    """
 Indo-Iranian
    Indic
       Sanskrit

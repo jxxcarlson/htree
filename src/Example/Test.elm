@@ -1,4 +1,4 @@
-module Example.Test exposing (..)
+module Example.Test exposing (o1, o2, o3, o3a, o3b, o4, o4a, o4w, o4x, o4y, o4z)
 
 
 o1 =
@@ -32,6 +32,7 @@ B
 C
 """
 
+
 o3a =
     """A
   p
@@ -39,6 +40,7 @@ o3a =
     2
     3
 """
+
 
 o3b =
     """A
@@ -65,6 +67,7 @@ B
 C
 """
 
+
 o4x =
     """A
   p
@@ -74,6 +77,7 @@ o4x =
       alpha
       beta
 """
+
 
 o4y =
     """A
@@ -86,6 +90,7 @@ o4y =
     y
 """
 
+
 o4z =
     """A
   p
@@ -97,6 +102,7 @@ o4z =
   z
 """
 
+
 o4w =
     """A
   p
@@ -107,6 +113,7 @@ o4w =
       beta
 w
 """
+
 
 o4a =
     """A
