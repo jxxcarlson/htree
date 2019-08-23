@@ -21,8 +21,7 @@ string, modulo trimming strings.
 identityTest str =
     str
       |> HS.parse
-      |> HT.tag
-      |> HS.toNormalString2
+      |> HS.toOutline
       |> Expect.equal (String.trim str)
 
 
