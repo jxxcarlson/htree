@@ -28,13 +28,14 @@ Algorithms
   Binary search
   Probabalistic methods
 Compational complexity
-  O(n) nottation
+  O(n) notation
   Polynomial time 
   Exponential time
 ...
 ```
 
-If we take the root label to be *Book*, then this outline
+If we take the root label to be *Book* and the level of an
+item to be the number of leading spaces divided by two, then this outline
 defines a tree.  The childreen of *Book* are are *Introduction*, 
 *Data Structures*, etc. *Introduction* has no children,
 while *Data Structures* has three.  Etc.
@@ -58,7 +59,7 @@ Data Structures
       ,Tree ("Data Structures") [Tree "Lists" [],Tree "Trees" [],Tree "Queues" []]
       ,Tree "Algorithms" [Tree "Brute-force-search" []
       ,Tree ("Binary search") [],Tree ("Probabalistic methods") []]
-      ,Tree ("Compational complexity") [Tree ("O(n) nottation") []
+      ,Tree ("Compational complexity") [Tree ("O(n) notation") []
       ,Tree ("Polynomial time") [],Tree ("Exponential time") []],Tree "" []]
 ```
 
