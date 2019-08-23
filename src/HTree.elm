@@ -252,13 +252,14 @@ a string that represents the tree as an outline.
 
 The string returned is
 
-    A
-        p
-        q
-    B
-        r
-        s
-    C
+    *
+        A
+            p
+            q
+        B
+            r
+            s
+        C
 -}
 toOutline : (a -> String) -> Tree a -> String
 toOutline stringOfLabel t =
