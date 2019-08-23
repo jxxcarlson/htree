@@ -1,34 +1,47 @@
-module HTree exposing (fromList, flatten, toOutline, tagWithDepth, depth, nodeCount)
-
+module HTree exposing (depth, flatten, fromList, nodeCount, tagWithDepth, toOutline)
 
 {-| Working with hierarchical lists.
+
   - convert a hierarchical list to a rose tree
   - convert a rose tree to a list of node labels
   - convert a rose tree to a string representing the corresponding outline
   - etc.
+
 @docs fromList, flatten, toOutline, depth, nodeCount, tagWithDepth
+
 -}
 
 import Tree exposing (Tree, singleton)
 import Tree.Zipper as Zipper exposing (Zipper)
 
+
 {-| Given:
+
   - a root element of type a
   - a function that determines the level of an item
   - a list of items of type a
 
-`fromList` returns the corresponding rose tree. For an example this snippet
+`fromList` returns the corresponding rose tree. For an example, consider this snippet
 
+    -- IMPORTS
     import Example.Test as Example exposing (o2)
     import HTree.String as HS
     import Tree exposing (Tree)
+    import HTree exposing(..)
 
+    -- INPUT STRING
+    o2 =
+    """
+    A
+      p
+      q
+    B
+    """
+
+    -- CODE
     data : List String
-    data =
-        String.split "\n" o2
-            |> List.filter (not << String.isEmpty)
-    data
-        --> ["A","  p","  q","B","  r","  s","C"]
+    data = String.split "\n" o2 |> List.filter (not << String.isEmpty)
+        --> ["A","  p","  q","B"]
 
     tree : Tree String
     tree =
@@ -38,19 +51,8 @@ import Tree.Zipper as Zipper exposing (Zipper)
 
         --> Tree "*"
         --> [ Tree "A" [ Tree "  p" [], Tree "  q" [] ]
-        --> , Tree "B" [ Tree "  r" [], Tree "  s" [] ]
-        --> , Tree "C" []
+        --> , Tree "B" []
         --> ]
-
-produces the outline
-
-    A
-        p
-        q
-    B
-        r
-        s
-    C
 -}
 fromList : a -> (a -> Int) -> List a -> Tree a
 fromList rootLabel level lst =
@@ -87,39 +89,38 @@ step level s z =
 a tree of tuples of the form `(a, k)`, where `k` is the
 depth of `a` in the tree.
 
-    > tagWithDepth (Tree.map String.trim t)
+    > tagWithDepth (Tree.map String.trim tree)
       Tree ("*",0) [
         Tree ("A",1) [Tree ("p",2) [],Tree ("q",2) []]
-       ,Tree ("B",1) [Tree ("r",2) [],Tree ("s",2) []]
-       ,Tree ("C",1) []]
+       ,Tree ("B",1) []
+      ]
 
 -}
 tagWithDepth : Tree a -> Tree ( a, Int )
 tagWithDepth t =
-    tagWithDepth_ ( t, 0 )
+    tagWithDepthHelp 0 t
 
 
-tagWithDepth_ : ( Tree a, Int ) -> Tree ( a, Int )
-tagWithDepth_ ( t, k ) =
+tagWithDepthHelp : Int -> Tree a -> Tree ( a, Int )
+tagWithDepthHelp k t =
     let
         c =
             Tree.children t
     in
-    Tree.tree ( Tree.label t, k ) (List.map (\t_ -> tagWithDepth_ ( t_, k + 1 )) c)
+    Tree.tree ( Tree.label t, k ) (List.map (\t_ -> tagWithDepthHelp (k + 1) t_) c)
 
 
-{-| Map a tree to a list of node contents:
+{-| Flatten a tree into a list of labels.
 
-    > import Tree
+    Tree.map (\label -> String.trim label) tree
+        --> Tree "*"
+        -->     [ Tree "A" [ Tree "p" [], Tree "q" [] ]
+        -->     , Tree "B" []
+        -->     ]
 
-    > t |> Tree.map (\label -> String.trim label)
-      Tree "*" [
-         Tree "A" [Tree "p" [],Tree "q" []]
-        ,Tree "B" [Tree "r" [],Tree "s" []]
-        ,Tree "C" []]
-
-     > t |> Tree.map (\label -> String.trim label) |> lffla
-       ["*","A","p","q","B","r","s","C"]
+    Tree.map (\label -> String.trim label) tree
+        |> toList
+            --> [ "*", "A", "p", "q", "B"]
 
 -}
 flatten : Tree b -> List b
@@ -145,22 +146,17 @@ appendAtFocus s z =
 
 addChildAtFocus : a -> Zipper a -> Zipper a
 addChildAtFocus s z =
-    case Zipper.lastChild z of
-        Nothing ->
-            z
-
-        Just zz ->
-            appendAtFocus s zz
+    Zipper.lastChild z
+        |> Maybe.map (appendAtFocus s)
+        |> Maybe.withDefault z
 
 
 addAtNthParent : Int -> a -> Zipper a -> Zipper a
-addAtNthParent  k s z =
-    case manyParent k z of
-        Nothing ->
-            z
+addAtNthParent k s z =
+    manyParent k z
+        |> Maybe.map (appendAtFocus s)
+        |> Maybe.withDefault z
 
-        Just zz ->
-            appendAtFocus s zz
 
 
 -- MOVING AROUND --
@@ -176,8 +172,12 @@ manyParent k z =
 
 
 iterate : Int -> (a -> a) -> a -> a
-iterate k f x =
-    List.foldl (\_ acc -> f acc) x (List.range 1 k)
+iterate remaining f accumulator =
+    if remaining > 0 then
+        iterate (remaining - 1) f (f accumulator)
+
+    else
+        accumulator
 
 
 
@@ -259,14 +259,10 @@ a string that represents the tree as an outline.
 The string returned is
 
     *
-        A
-            p
-            q
-        B
-            r
-            s
-        C
-
+      A
+        p
+        q
+      B
 -}
 toOutline : (a -> String) -> Tree a -> String
 toOutline stringOfLabel t =
@@ -274,11 +270,6 @@ toOutline stringOfLabel t =
         |> tagWithDepth
         |> toOutlineHelp stringOfLabel
 
-{-| This version of `outLineHelp` using Ilias' `restructure`
-is courtesy of Folkert de Vries.  Thanks Folkert!
-Much nicer!
-
--}
 toOutlineHelp labelToString =
     let
         combine : ( String, Int ) -> List String -> String

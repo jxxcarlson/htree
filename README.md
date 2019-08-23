@@ -40,12 +40,12 @@ is a hierarchical list and so defines a tree.  The children of *Book* are are *I
 *Data Structures*, etc. *Introduction* has no children,
 while *Data Structures* has three.  Etc.
 
-One can turn the above outline into a tree like this:
+One can turn the above outline into a tree as follows.
 
 ```
 > import HTree.String
 
-> ourtline = """
+> outline = """
 Introduction
 Data Structures
   Lists
@@ -53,7 +53,7 @@ Data Structures
   ...
 """
 
-> t = HTree.String.parse ourtline
+> tree = HTree.String.parse ourtline
   Tree "*" 
      [ Tree "Introduction" []
       ,Tree ("Data Structures") [Tree "Lists" [],Tree "Trees" [],Tree "Queues" []]
@@ -66,7 +66,7 @@ Data Structures
 Conversely, a tree can be turned into an outline:
 
 ```
-> HTree.String.toOutline t 
+> HTree.String.toOutline tree 
   ...
 ```
 
@@ -93,5 +93,8 @@ level = Tuple.first
 ```
 
 
+## Acknowledgements
 
-
+Folkert de Vries made important contributions to the clarity of
+the exposition in this packate as well as to the quality of code. 
+Thank you Folkert! 

@@ -1,12 +1,11 @@
 module Example.IndoEuropean exposing (outline)
 
-
 -- [this reference](http://www.jacklynch.net/language.html)
 -- http://www.elinguistics.net/IE_language_tree.html
 -- https://www.nytimes.com/1996/01/02/science/new-family-tree-is-constructed-for-indo-european.html
 
 
-outline: String
+outline : String
 outline =
     """
 Indo-Iranian
