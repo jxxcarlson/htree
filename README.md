@@ -34,7 +34,7 @@ Compational complexity
 ...
 ```
 
-If we take the root label to be **Book**, then this outline
-defines a tree.  The childreen of **Book** are are **Introduction**, 
-**Data Structures**, etc. **Introduction** has no children,
-while **Data Structures** has three.  Etc.
+If we take the root label to be *Book*, then this outline
+defines a tree.  The childreen of *Book* are are *Introduction*, 
+*Data Structures*, etc. *Introduction* has no children,
+while *Data Structures* has three.  Etc.

@@ -15,7 +15,6 @@ import Parser exposing(Parser, succeed, chompWhile, getChompedString, (|.))
     Tree ("*",0) [Tree ("A",1) [Tree ("p",2) [Tree ("1",3) [],Tree ("2",3) [],Tree ("3",3) []]],Tree ("q",1) [],Tree ("B",1) [Tree ("r",2) [],Tree ("s",2) []],Tree ("C",1) []]
 
 -}
-
 parse : String -> Tree String
 parse str =
     String.split "\n" str
@@ -34,7 +33,7 @@ toNormalString2 t =
 
 toString : Tree (String, Int) -> String
 toString t =
-    letm
+    let
         c = Tree.children t
         (label_, level_) = Tree.label t
         n  = 2 * (level_ - 1 )
