@@ -36,7 +36,7 @@ Compational complexity
 
 If we take the root label to be *Book* and the level of an
 item to be the number of leading spaces divided by two, then this outline
-defines a tree.  The childreen of *Book* are are *Introduction*, 
+is a hierarchical list and so defines a tree.  The childreen of *Book* are are *Introduction*, 
 *Data Structures*, etc. *Introduction* has no children,
 while *Data Structures* has three.  Etc.
 
