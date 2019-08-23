@@ -3,7 +3,7 @@
     "name": "jxxcarlson/htree",
     "summary": "Transform hierarchical list to a rose tree",
     "license": "BSD-3-Clause",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "exposed-modules": [
         "HTree",
         "HTree.String"
