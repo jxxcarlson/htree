@@ -1,4 +1,4 @@
-module HTree exposing (fromList, tag, toList, toOutline, depth, nodeCount)
+module HTree exposing (fromList, tagWithDepth, toList, toOutline, depth, nodeCount)
 
 {-|
 
@@ -88,16 +88,16 @@ depth of `a` in the tree.
        ,Tree ("C",1) []]
 
 -}
-tag : Tree a -> Tree (a, Int)
-tag t =
-    tag_ (t, 0)
+tagWithDepth : Tree a -> Tree (a, Int)
+tagWithDepth t =
+    tagWithDepth_ (t, 0)
 
-tag_ : (Tree a,  Int) -> Tree (a, Int)
-tag_ (t, k) =
+tagWithDepth_ : (Tree a,  Int) -> Tree (a, Int)
+tagWithDepth_ (t, k) =
     let
         c = Tree.children t
      in
-        Tree.tree (Tree.label t, k) (List.map (\t_ -> tag_ (t_, (k + 1))) c)
+        Tree.tree (Tree.label t, k) (List.map (\t_ -> tagWithDepth_ (t_, (k + 1))) c)
 
 {-| Map a tree to a list of node contents:
 
@@ -264,7 +264,7 @@ The string returned is
 toOutline : (a -> String) -> Tree a -> String
 toOutline stringOfLabel t =
    t
-     |> tag
+     |> tagWithDepth
      |> toOutline_ stringOfLabel
 
 
