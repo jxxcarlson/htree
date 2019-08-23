@@ -67,10 +67,10 @@ step level s z =
     in
     case ld of
         Nothing ->
-            appendAtFocus level s z
+            appendAtFocus s z
 
         Just 0 ->
-            appendAtFocus level s z
+            appendAtFocus s z
 
         Just 1 ->
             addChildAtFocus level s z
@@ -131,8 +131,8 @@ flatten t =
 -- ADDING THINGS --
 
 
-appendAtFocus : (a -> Int) -> a -> Zipper a -> Zipper a
-appendAtFocus level s z =
+appendAtFocus : a -> Zipper a -> Zipper a
+appendAtFocus s z =
     let
         t =
             Zipper.tree z
@@ -150,7 +150,7 @@ addChildAtFocus level s z =
             z
 
         Just zz ->
-            appendAtFocus level s zz
+            appendAtFocus s zz
 
 
 addChildAtParentOfFocus : (a -> Int) -> a -> Zipper a -> Zipper a
@@ -160,7 +160,7 @@ addChildAtParentOfFocus level s z =
             z
 
         Just zz ->
-            appendAtFocus level s zz
+            appendAtFocus s zz
 
 
 addAtNthParent : (a -> Int) -> Int -> a -> Zipper a -> Zipper a
@@ -170,7 +170,7 @@ addAtNthParent level k s z =
             z
 
         Just zz ->
-            appendAtFocus level s zz
+            appendAtFocus s zz
 
 
 nthParentOfFocus : Int -> Zipper a -> Zipper a

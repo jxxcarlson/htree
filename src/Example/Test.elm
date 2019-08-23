@@ -1,13 +1,13 @@
-module Example.Test exposing (o1, o2, o3, o3a, o3b, o4, o4a, o4w, o4x, o4y, o4z)
+module Example.Test exposing (o1, o2, o3, o4, o4y, o4z, o4w)
 
-
+o1: String
 o1 =
     """A
 B
 C
 """
 
-
+o2: String
 o2 =
     """A
   p
@@ -18,7 +18,7 @@ B
 C
 """
 
-
+o3: String
 o3 =
     """A
   p
@@ -32,26 +32,7 @@ B
 C
 """
 
-
-o3a =
-    """A
-  p
-    1
-    2
-    3
-"""
-
-
-o3b =
-    """A
-  p
-    1
-    2
-    3
-  q
-"""
-
-
+o4: String
 o4 =
     """A
   p
@@ -67,18 +48,7 @@ B
 C
 """
 
-
-o4x =
-    """A
-  p
-    1
-    2
-    3
-      alpha
-      beta
-"""
-
-
+o4y: String
 o4y =
     """A
   p
@@ -90,7 +60,7 @@ o4y =
     y
 """
 
-
+o4z: String
 o4z =
     """A
   p
@@ -102,7 +72,7 @@ o4z =
   z
 """
 
-
+o4w: String
 o4w =
     """A
   p
@@ -114,19 +84,3 @@ o4w =
 w
 """
 
-
-o4a =
-    """A
-  p
-    1
-    2
-    3
-      alpha
-      beta
-    X
-  q
-B
-  r
-  s
-C
-"""

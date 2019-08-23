@@ -39,6 +39,14 @@ lineTests =
          , test "o4" <|
             \_ ->
                identityTest Example.o4
-
+         , test "o4y" <|
+            \_ ->
+               identityTest Example.o4y
+         , test "o4z" <|
+            \_ ->
+               identityTest Example.o4z
+         , test "o4w" <|
+            \_ ->
+               identityTest Example.o4w
 
         ]
