@@ -1,4 +1,4 @@
-module Example.Test exposing (o1, o2, o3, o4, o4y, o4z, o4w)
+module Example.Test exposing (o1, o2, o3, o4, o4y, o4z, o4w, assignments, root)
 
 o1: String
 o1 =
@@ -84,3 +84,11 @@ o4w =
 w
 """
 
+
+assignments : List (Int, String)
+assignments = [  (1, "Groceries"), (2, "Fred"), (2, "Mary")
+               , (1, "Cooks"), (2, "Sarah"), (2, "John")
+               , (1, "Cleanup crew"),  (2, "George"), (2, "Susan")]
+
+root : (Int, String)
+root = (0, "Assignments")

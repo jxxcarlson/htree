@@ -28,7 +28,7 @@ Algorithms
   Binary search
   Probabalistic methods
 Compational complexity
-  O(n) notation
+  Big O notation
   Polynomial time 
   Exponential time
 ...
@@ -59,7 +59,7 @@ Data Structures
       ,Tree ("Data Structures") [Tree "Lists" [],Tree "Trees" [],Tree "Queues" []]
       ,Tree "Algorithms" [Tree "Brute-force-search" []
       ,Tree ("Binary search") [],Tree ("Probabalistic methods") []]
-      ,Tree ("Compational complexity") [Tree ("O(n) notation") []
+      ,Tree ("Compational complexity") [Tree ("Big O notation") []
       ,Tree ("Polynomial time") [],Tree ("Exponential time") []],Tree "" []]
 ```
 
@@ -69,4 +69,29 @@ Conversely, a tree can be turned into an outline:
 > HTree.String.toOutline t 
   ...
 ```
+
+## Note
+
+Hierarchical lists can take many forms.  For example, suppose given 
+
 ```
+hList : List (Int, a)
+
+```
+
+and a value 
+
+```
+root : (Int, a)
+root = (0, rootLabel)
+```
+
+Then `hList` is a hierarchical list with 
+
+```
+level = Tuple.first
+```
+
+
+
+

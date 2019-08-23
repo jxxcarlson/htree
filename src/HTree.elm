@@ -1,61 +1,61 @@
 module HTree exposing (fromList, flatten, toOutline, tagWithDepth, depth, nodeCount)
 
-{-| Convert hierarchical lists to a rose tree,
-convert a rose tree to a list of node labels,
-convert a rose tree to a string representing the
-corresponding outline, etc. See HTreeExample.elm.
 
-@docs fromList, flatten, toOutline, tagWithDepth, depth, nodeCount
-
+{-| Working with hierarchical lists.
+  - convert a hierarchical list to a rose tree
+  - convert a rose tree to a list of node labels
+  - convert a rose tree to a string representing the corresponding outline
+  - etc.
+@docs fromList, flatten, toOutline, depth, nodeCount, tagWithDepth
 -}
 
 import Tree exposing (Tree, singleton)
 import Tree.Zipper as Zipper exposing (Zipper)
 
-
-{-| Suppose given:
-
+{-| Given:
   - a root element of type a
   - a function that determines the level of an item
   - a list of items of type a
 
-Then `fromList` returns the corresponding rose tree.
-For an example, consider the outline given by the string
-\`Example.Test.o2:
+`fromList` returns the corresponding rose tree. For an example this snippet
+
+    import Example.Test as Example exposing (o2)
+    import HTree.String as HS
+    import Tree exposing (Tree)
+
+    data : List String
+    data =
+        String.split "\n" o2
+            |> List.filter (not << String.isEmpty)
+    data
+        --> ["A","  p","  q","B","  r","  s","C"]
+
+    tree : Tree String
+    tree =
+        -- `HS.level` returns the number of leading spaces
+        -- divided by 2 using integer division.
+        fromList "*" HS.level data
+
+        --> Tree "*"
+        --> [ Tree "A" [ Tree "  p" [], Tree "  q" [] ]
+        --> , Tree "B" [ Tree "  r" [], Tree "  s" [] ]
+        --> , Tree "C" []
+        --> ]
+
+produces the outline
 
     A
         p
         q
-
     B
         r
         s
-
     C
-
-Then we have
-
-    > import HTree exposing(..)
-    > import HTree.String as HS
-    > import Example.Test as Example
-
-    > data = String.split "\n" o2 |> List.filter (\line -> line /= "")
-    ["A","  p","  q","B","  r","  s","C"]
-
-    > t = fromList "*" HS.level data
-    Tree "*"
-       [Tree "A" [Tree ("  p") [],Tree ("  q") []]
-       ,Tree "B" [Tree ("  r") [],Tree ("  s") []]
-       ,Tree "C" []]
-
-The function `HS.level` returns the number of leading spaces divided by 2 --
-integer division, no remainder.
-
 -}
 fromList : a -> (a -> Int) -> List a -> Tree a
-fromList rooLabel level lst =
+fromList rootLabel level lst =
     lst
-        |> List.foldl (\s z -> step level s z) (Zipper.fromTree (Tree.singleton rooLabel))
+        |> List.foldl (\s z -> step level s z) (Zipper.fromTree (Tree.singleton rootLabel))
         |> Zipper.toTree
 
 
@@ -73,14 +73,14 @@ step level s z =
             appendAtFocus s z
 
         Just 1 ->
-            addChildAtFocus level s z
+            addChildAtFocus s z
 
         _ ->
             let
                 levelsBack =
                     negate (ld |> Maybe.withDefault 0)
             in
-            addAtNthParent level levelsBack s z
+            addAtNthParent levelsBack s z
 
 
 {-| The `tagWithDepth` function transforms a tree of items into
@@ -143,8 +143,8 @@ appendAtFocus s z =
     Zipper.replaceTree newTree z
 
 
-addChildAtFocus : (a -> Int) -> a -> Zipper a -> Zipper a
-addChildAtFocus level s z =
+addChildAtFocus : a -> Zipper a -> Zipper a
+addChildAtFocus s z =
     case Zipper.lastChild z of
         Nothing ->
             z
@@ -153,35 +153,14 @@ addChildAtFocus level s z =
             appendAtFocus s zz
 
 
-addChildAtParentOfFocus : (a -> Int) -> a -> Zipper a -> Zipper a
-addChildAtParentOfFocus level s z =
-    case Zipper.parent z of
-        Nothing ->
-            z
-
-        Just zz ->
-            appendAtFocus s zz
-
-
-addAtNthParent : (a -> Int) -> Int -> a -> Zipper a -> Zipper a
-addAtNthParent level k s z =
+addAtNthParent : Int -> a -> Zipper a -> Zipper a
+addAtNthParent  k s z =
     case manyParent k z of
         Nothing ->
             z
 
         Just zz ->
             appendAtFocus s zz
-
-
-nthParentOfFocus : Int -> Zipper a -> Zipper a
-nthParentOfFocus k z =
-    case manyParent k z of
-        Nothing ->
-            z
-
-        Just zz ->
-            zz
-
 
 
 -- MOVING AROUND --
@@ -196,25 +175,9 @@ manyParent k z =
     iterate (k - 1) (\zi -> Maybe.andThen Zipper.parent zi) zz
 
 
-manyBackward : Int -> Zipper a -> Maybe (Zipper a)
-manyBackward k z =
-    if k < 0 then
-        Nothing
-
-    else if k == 0 then
-        Just z
-
-    else
-        let
-            zz =
-                Zipper.backward z
-        in
-        iterate k (\zi -> Maybe.andThen Zipper.backward zi) zz
-
-
 iterate : Int -> (a -> a) -> a -> a
 iterate k f x =
-    List.foldl (\i acc -> f acc) x (List.range 1 k)
+    List.foldl (\_ acc -> f acc) x (List.range 1 k)
 
 
 
@@ -309,32 +272,26 @@ toOutline : (a -> String) -> Tree a -> String
 toOutline stringOfLabel t =
     t
         |> tagWithDepth
-        |> toOutline_ stringOfLabel
+        |> toOutlineHelp stringOfLabel
 
+{-| This version of `outLineHelp` using Ilias' `restructure`
+is courtesy of Folkert de Vries.  Thanks Folkert!
+Much nicer!
 
-toOutline_ : (a -> String) -> Tree ( a, Int ) -> String
-toOutline_ stringOfLabel t =
+-}
+toOutlineHelp labelToString =
     let
-        stringOfLabel_ t_ =
-            Tree.label t_ |> Tuple.first |> stringOfLabel
+        combine : ( String, Int ) -> List String -> String
+        combine ( currentLabel, currentLevel ) children =
+            let
+                prefix =
+                    String.repeat (2 * (currentLevel - 1)) " "
+            in
+            case children of
+                [] ->
+                    prefix ++ currentLabel
 
-        c =
-            Tree.children t
-
-        ( label_, level_ ) =
-            Tree.label t |> (\( la, le ) -> ( stringOfLabel_ t, le ))
-
-        n =
-            2 * (level_ - 1)
-
-        prefix =
-            String.repeat n " "
-
-        lab =
-            prefix ++ label_
+                _ ->
+                    prefix ++ currentLabel ++ "\n" ++ String.join "\n" children
     in
-    if c == [] then
-        lab
-
-    else
-        lab ++ "\n" ++ (List.map (toOutline_ stringOfLabel) c |> String.join "\n")
+    Tree.restructure (Tuple.mapFirst labelToString) combine
