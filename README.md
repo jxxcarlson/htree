@@ -38,3 +38,34 @@ If we take the root label to be *Book*, then this outline
 defines a tree.  The childreen of *Book* are are *Introduction*, 
 *Data Structures*, etc. *Introduction* has no children,
 while *Data Structures* has three.  Etc.
+
+One can turn the above outline into a tree like this:
+
+```
+> import HTree.String
+
+> ourtline = """
+Introduction
+Data Structures
+  Lists
+  Trees
+  ...
+"""
+
+> t = HTree.String.parse ourtline
+  Tree "*" 
+     [ Tree "Introduction" []
+      ,Tree ("Data Structures") [Tree "Lists" [],Tree "Trees" [],Tree "Queues" []]
+      ,Tree "Algorithms" [Tree "Brute-force-search" []
+      ,Tree ("Binary search") [],Tree ("Probabalistic methods") []]
+      ,Tree ("Compational complexity") [Tree ("O(n) nottation") []
+      ,Tree ("Polynomial time") [],Tree ("Exponential time") []],Tree "" []]
+```
+
+Conversely, a tree can be turned into an outline:
+
+```
+> HTree.String.toOutline t 
+  ...
+```
+```
