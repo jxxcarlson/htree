@@ -1,7 +1,7 @@
 
 # HTree
 
-The purpose of this module is to transform hierarchical lists
+The purpose of this package is to transform hierarchical lists
 into trees, where trees are as in `zwilias/elm-rosetree`.  A hierarchical
 list is by definition a list of items
 endowed with a function
@@ -53,7 +53,7 @@ Data Structures
   ...
 """
 
-> tree = HTree.String.parse ourtline
+> tree = HTree.String.parse outline
   Tree "*" 
      [ Tree "Introduction" []
       ,Tree ("Data Structures") [Tree "Lists" [],Tree "Trees" [],Tree "Queues" []]
